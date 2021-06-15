@@ -1,22 +1,32 @@
 package com.testeVinicius.productms.controller;
 
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import com.testeVinicius.productms.entities.Product;
+import com.testeVinicius.productms.repository.ProductRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/products")
 public class ProductsController {
 
+    @Autowired
+    ProductRepository productRepository;
+
     @GetMapping
-    public String healthCheck(){
-        return "up";
+    public List<Product> ProductsList() {
+        List<Product> products = productRepository.findAll();
+        return products;
     }
 
+    @GetMapping("/{id}")
+    public Optional<Product> SearchProductById(@PathVariable String id) {
+        Optional<Product> product = productRepository.findById(id);
+        return product;
+    }
 }
-
-
 
 /*
 POST 	/products 	Criação de um produto
