@@ -9,8 +9,8 @@ import javax.persistence.*;
 @Entity
 public class Product {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id @GeneratedValue(generator="system-uuid")
+    @GenericGenerator(name="system-uuid", strategy = "uuid")
     private String id;
 
     @NotNull
@@ -30,6 +30,12 @@ public class Product {
     }
 
     public Product() {
+    }
+
+    public Product(String name, String description, int price) {
+        this.name = name;
+        this.description = description;
+        this.price = price;
     }
 
     public String getId() {

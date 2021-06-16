@@ -1,10 +1,13 @@
 package com.testeVinicius.productms.controller;
 
 import com.testeVinicius.productms.entities.Product;
+import com.testeVinicius.productms.form.ProductForm;
 import com.testeVinicius.productms.repository.ProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.transaction.Transactional;
 import java.util.List;
 import java.util.Optional;
 
@@ -16,23 +19,45 @@ public class ProductsController {
     ProductRepository productRepository;
 
     @GetMapping
-    public List<Product> ProductsList() {
+    public List<Product> productsList() {
         List<Product> products = productRepository.findAll();
         return products;
     }
 
     @GetMapping("/{id}")
-    public Optional<Product> SearchProductById(@PathVariable String id) {
+    public Optional<Product> searchProductById(@PathVariable String id) {
         Optional<Product> product = productRepository.findById(id);
         return product;
     }
+
+    @PostMapping
+    public ResponseEntity<Product> insertProduct(@RequestBody ProductForm form) {
+        Product product = form.insertConverter();
+        productRepository.save(product);
+        return ResponseEntity.ok().body(product);
+    }
+
+    @PutMapping("/{id}")
+    @Transactional
+    public ResponseEntity<Product> updateProduct(@PathVariable String id, @RequestBody ProductForm form) {
+        Product product = form.updateConverter(id, productRepository, form);
+        return ResponseEntity.ok().body(product);
+    }
+
+    @DeleteMapping("/{id}")
+    @Transactional
+    public ResponseEntity<Product> deleteProduct(@PathVariable String id) {
+
+        Optional<Product> product = productRepository.findById(id);
+        if (product.isPresent()) {
+            productRepository.delete(id);
+            return ResponseEntity.ok().build();
+        } else
+            return ResponseEntity.notFound().build();
+    }
+
 }
 
 /*
-POST 	/products 	Criação de um produto
-PUT 	/products/ 	Atualização de um produto
-GET 	/products/ 	Busca de um produto por ID
-GET 	/products 	Lista de produtos
 GET 	/products/search 	Lista de produtos filtrados
-DELETE 	/products/ 	Deleção de um produto
 */
