@@ -30,6 +30,14 @@ public class ProductsController {
         return product;
     }
 
+    @GetMapping("/search")
+    public List<Product> searchProducts(@RequestParam(required = false) Integer min_price,
+                                            @RequestParam(required = false) Integer max_price,
+                                            @RequestParam(required = false) String q) {
+        List<Product> products = productRepository.SearchProduct(min_price, max_price, q);
+        return products;
+    }
+
     @PostMapping
     public ResponseEntity<Product> insertProduct(@RequestBody ProductForm form) {
         Product product = form.insertConverter();
@@ -50,14 +58,10 @@ public class ProductsController {
 
         Optional<Product> product = productRepository.findById(id);
         if (product.isPresent()) {
-            productRepository.delete(id);
+            productRepository.deleteById(id);
             return ResponseEntity.ok().build();
         } else
             return ResponseEntity.notFound().build();
     }
 
 }
-
-/*
-GET 	/products/search 	Lista de produtos filtrados
-*/

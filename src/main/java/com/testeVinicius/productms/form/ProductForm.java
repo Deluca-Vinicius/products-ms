@@ -16,15 +16,17 @@ public class ProductForm {
     @NotNull
     private Integer price;
 
-    public Product insertConverter(){ return new Product(name, description, price);}
+    public Product insertConverter() {
+        return new Product(name, description, price);
+    }
 
     public Product updateConverter(String id, ProductRepository productRepository, @RequestBody ProductForm form) {
 
         Product product = productRepository.getById(id);
         if (form.name != null)
-            product.setName(this.name);
+            product.setName(this.name.toLowerCase());
         if (form.description != null)
-            product.setDescription(this.description);
+            product.setDescription(this.description.toLowerCase());
         if (form.price != null)
             product.setPrice(this.price);
 

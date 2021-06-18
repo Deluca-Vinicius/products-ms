@@ -24,8 +24,8 @@ public class Product {
 
     public Product(String id, String name, String description, int price) {
         this.id = id;
-        this.name = name;
-        this.description = description;
+        this.name = name.toLowerCase();
+        this.description = description.toLowerCase();
         this.price = price;
     }
 
@@ -33,8 +33,8 @@ public class Product {
     }
 
     public Product(String name, String description, int price) {
-        this.name = name;
-        this.description = description;
+        this.name = name.toLowerCase();
+        this.description = description.toLowerCase();
         this.price = price;
     }
 
