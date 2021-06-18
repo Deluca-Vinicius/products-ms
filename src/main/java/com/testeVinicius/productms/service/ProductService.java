@@ -1,61 +1,49 @@
-package com.testeVinicius.productms.controller;
+package com.testeVinicius.productms.service;
 
 import com.testeVinicius.productms.entities.Product;
 import com.testeVinicius.productms.form.ProductForm;
 import com.testeVinicius.productms.repository.ProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.stereotype.Service;
 
-import javax.transaction.Transactional;
+
 import java.util.List;
 import java.util.Optional;
 
-@RestController
-@RequestMapping("/products")
-public class ProductsController {
+@Service
+public class ProductService {
 
     @Autowired
     ProductRepository productRepository;
 
-    @GetMapping
     public List<Product> productsList() {
         List<Product> products = productRepository.findAll();
         return products;
     }
 
-    @GetMapping("/{id}")
-    public Optional<Product> searchProductById(@PathVariable String id) {
+    public Optional<Product> searchProductById(String id) {
         Optional<Product> product = productRepository.findById(id);
         return product;
     }
 
-    @GetMapping("/search")
-    public List<Product> searchProducts(@RequestParam(required = false) Integer min_price,
-                                            @RequestParam(required = false) Integer max_price,
-                                            @RequestParam(required = false) String q) {
+    public List<Product> searchProducts(Integer min_price, Integer max_price, String q) {
         List<Product> products = productRepository.SearchProduct(min_price, max_price, q);
         return products;
     }
 
-    @PostMapping
-    public ResponseEntity<Product> insertProduct(@RequestBody ProductForm form) {
+    public Product insertProduct(ProductForm form) {
         Product product = form.insertConverter();
         productRepository.save(product);
-        return ResponseEntity.ok().body(product);
+        return product;
     }
 
-    @PutMapping("/{id}")
-    @Transactional
-    public ResponseEntity<Product> updateProduct(@PathVariable String id, @RequestBody ProductForm form) {
+    public Product updateProduct(String id, ProductForm form) {
         Product product = form.updateConverter(id, productRepository, form);
-        return ResponseEntity.ok().body(product);
+        return product;
     }
 
-    @DeleteMapping("/{id}")
-    @Transactional
-    public ResponseEntity<Product> deleteProduct(@PathVariable String id) {
-
+    public ResponseEntity<Product> deleteProduct(String id) {
         Optional<Product> product = productRepository.findById(id);
         if (product.isPresent()) {
             productRepository.deleteById(id);

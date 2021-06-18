@@ -22,13 +22,6 @@ public class Product {
     @NotNull
     private int price;
 
-    public Product(String id, String name, String description, int price) {
-        this.id = id;
-        this.name = name.toLowerCase();
-        this.description = description.toLowerCase();
-        this.price = price;
-    }
-
     public Product() {
     }
 
