@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.transaction.Transactional;
+import java.net.URI;
 import java.util.List;
 import java.util.Optional;
 
@@ -25,30 +26,31 @@ public class ProductController {
     }
 
     @GetMapping("/{id}")
-    public Optional<Product> searchProductById(@PathVariable String id) {
+    public ResponseEntity<Product> searchProductById(@PathVariable String id) {
         Optional<Product> product = productService.searchProductById(id);
-        return product;
+        if (product.isPresent()) {
+            return ResponseEntity.ok().body(product.get());
+        } else
+            return ResponseEntity.notFound().build();
     }
 
     @GetMapping("/search")
     public List<Product> searchProducts(@RequestParam(required = false) Integer min_price,
-                                            @RequestParam(required = false) Integer max_price,
-                                            @RequestParam(required = false) String q) {
+                                        @RequestParam(required = false) Integer max_price,
+                                        @RequestParam(required = false) String q) {
         List<Product> products = productService.searchProducts(min_price, max_price, q);
         return products;
     }
 
     @PostMapping
     public ResponseEntity<Product> insertProduct(@RequestBody ProductForm form) {
-        Product product = productService.insertProduct(form);
-        return ResponseEntity.ok().body(product);
+        return productService.insertProduct(form);
     }
 
     @PutMapping("/{id}")
     @Transactional
     public ResponseEntity<Product> updateProduct(@PathVariable String id, @RequestBody ProductForm form) {
-        Product product = productService.updateProduct(id, form);
-        return ResponseEntity.ok().body(product);
+        return productService.updateProduct(id, form);
     }
 
     @DeleteMapping("/{id}")

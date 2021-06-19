@@ -7,6 +7,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 
 public class ProductForm {
 
+    private String id;
+
     @NotNull
     private String name;
 
@@ -49,11 +51,19 @@ public class ProductForm {
         this.description = description;
     }
 
-    public int getPrice() {
+    public Integer getPrice() {
         return price;
     }
 
-    public void setPrice(int price) {
+    public void setPrice(Integer price) {
         this.price = price;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 }

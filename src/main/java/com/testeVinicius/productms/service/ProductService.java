@@ -6,8 +6,11 @@ import com.testeVinicius.productms.repository.ProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.util.Assert;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 
+import java.net.URI;
 import java.util.List;
 import java.util.Optional;
 
@@ -32,15 +35,26 @@ public class ProductService {
         return products;
     }
 
-    public Product insertProduct(ProductForm form) {
+    public ResponseEntity<Product> insertProduct(ProductForm form) {
+        Assert.notNull(form.getDescription(), "Add a description");
+        Assert.notNull(form.getName(), "Please inform the name");
+        Assert.notNull(form.getPrice(), "Please inform price");
+        Assert.isNull(form.getId(), "The ID can't be informed");
         Product product = form.insertConverter();
         productRepository.save(product);
-        return product;
+        URI location = getUri(product.getId());
+        return ResponseEntity.created(location).body(product);
     }
 
-    public Product updateProduct(String id, ProductForm form) {
-        Product product = form.updateConverter(id, productRepository, form);
-        return product;
+    public ResponseEntity<Product> updateProduct(String id, ProductForm form) {
+
+        Optional<Product> productSearch = productRepository.findById(id);
+        if (productSearch.isPresent()) {
+            Product product = form.updateConverter(id, productRepository, form);
+            URI location = getUri(product.getId());
+            return ResponseEntity.created(location).body(product);
+        } else
+            return ResponseEntity.notFound().build();
     }
 
     public ResponseEntity<Product> deleteProduct(String id) {
@@ -50,6 +64,11 @@ public class ProductService {
             return ResponseEntity.ok().build();
         } else
             return ResponseEntity.notFound().build();
+    }
+
+    private URI getUri(String id) {
+        return ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
+                .buildAndExpand(id).toUri();
     }
 
 }
