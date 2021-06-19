@@ -12,7 +12,7 @@ swagger: http://localhost:9999/swagger-ui.html
 
 Utiliza as seguintes tecnologias:
 
-- [Java 11][java 11]
+- [Java 11][java11]
 - [Springboot][springboot]
 - [SwaggerUi][swaggerUi]
 - [H2 Database][H2 Database]
